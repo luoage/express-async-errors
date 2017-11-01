@@ -1,30 +1,14 @@
 const Layer = require('express/lib/router/layer');
 
-function wrapErrorMiddleware(fn) {
-  return (err, req, res, next) => {
-    const ret = fn(err, req, res, next);
+const wrapErrorMiddleware = fn => (err, req, res, next) => {
+  Promise.resolve(fn(err, req, res, next))
+    .catch(next);
+};
 
-    if (ret && ret.catch) {
-      ret.catch(innerErr => next(innerErr));
-    }
-
-    return ret;
-  };
-}
-
-function wrap(fn) {
-  return (req, res, next) => {
-    const ret = fn(req, res, next);
-
-    if (ret && ret.catch) {
-      ret.catch((err) => {
-        next(err);
-      });
-    }
-
-    return ret;
-  };
-}
+const wrap = fn => (req, res, next) => {
+  Promise.resolve(fn(req, res, next))
+    .catch(next);
+};
 
 Object.defineProperty(Layer.prototype, 'handle', {
   enumerable: true,
