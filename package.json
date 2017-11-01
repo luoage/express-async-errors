@@ -1,6 +1,6 @@
 {
   "name": "express-async-errors",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Async/await error handling support for expressjs",
   "main": "index.js",
   "scripts": {
