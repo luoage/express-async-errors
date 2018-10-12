@@ -71,8 +71,7 @@ describe('express-async-errors', () => {
     });
 
     app.get('/test/:id', async (err, req, next, id) => {
-      console.log(id);
-      throw new Error('error');
+      throw new Error(`error ${id}`);
     });
 
     app.use((err, req, res, next) => {
