@@ -8,7 +8,7 @@ var last = function(arr) {
 var noop = Function.prototype;
 
 function copyFnProps(oldFn, newFn) {
-  Object.keys(oldFn).forEach((key) => {
+  Object.keys(oldFn).forEach(function(key) {
     newFn[key] = oldFn[key];
   });
   return newFn;
@@ -33,7 +33,7 @@ function wrap(fn) {
 
 function patchRouterParam() {
   var originalParam = Router.prototype.constructor.param;
-  Router.prototype.varructor.param = function param(name, fn) {
+  Router.prototype.constructor.param = function param(name, fn) {
     fn = wrap(fn);
     return originalParam.call(this, name, fn);
   };
