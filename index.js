@@ -1,8 +1,11 @@
-const Layer = require('express/lib/router/layer');
-const Router = require('express/lib/router');
+var Layer = require('express/lib/router/layer');
+var Router = require('express/lib/router');
 
-const last = (arr = []) => arr[arr.length - 1];
-const noop = Function.prototype;
+var last = function(arr) {
+  arr = arr || [];
+  return arr[arr.length - 1];
+};
+var noop = Function.prototype;
 
 function copyFnProps(oldFn, newFn) {
   Object.keys(oldFn).forEach((key) => {
@@ -12,10 +15,13 @@ function copyFnProps(oldFn, newFn) {
 }
 
 function wrap(fn) {
-  const newFn = function newFn(...args) {
-    const ret = fn.apply(this, args);
-    const next = (args.length === 5 ? args[2] : last(args)) || noop;
-    if (ret && ret.catch) ret.catch(err => next(err));
+  var newFn = function newFn() {
+    var args = Array.prototype.slice.call(arguments);
+    var ret = fn.apply(this, args);
+    var next = (args.length === 5 ? args[2] : last(args)) || noop;
+    if (ret && ret.catch) ret.catch(function(err) {
+      next(err);
+    });
     return ret;
   };
   Object.defineProperty(newFn, 'length', {
@@ -26,8 +32,8 @@ function wrap(fn) {
 }
 
 function patchRouterParam() {
-  const originalParam = Router.prototype.constructor.param;
-  Router.prototype.constructor.param = function param(name, fn) {
+  var originalParam = Router.prototype.constructor.param;
+  Router.prototype.varructor.param = function param(name, fn) {
     fn = wrap(fn);
     return originalParam.call(this, name, fn);
   };
@@ -35,10 +41,10 @@ function patchRouterParam() {
 
 Object.defineProperty(Layer.prototype, 'handle', {
   enumerable: true,
-  get() {
+  get: function() {
     return this.__handle;
   },
-  set(fn) {
+  set: function(fn) {
     fn = wrap(fn);
     this.__handle = fn;
   },
